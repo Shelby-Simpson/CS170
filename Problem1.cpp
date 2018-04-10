@@ -6,13 +6,25 @@ using namespace std;
 bool ordered(int num, double seq1 ...);
 
 int main(){
-	vector<double> sequence;
-	int i;
-	int num = i;
-	cout << "This program allows you to enter a sequence of numbers and checks if you entered them in ascending order.\n" << endl;
-	for (i = 0; i > 0; i++){
-		cout << "Please enter number " << i << " in your sequence. (Ctrl-z to end)\n" << endl;
-		cin >> sequence.push_back(i);
+	cout << ordered(3, 5, 6, 7) << endl;
+	system("pause");
+}
+
+bool ordered(int num, double seq1 ...){
+	va_list sequence;
+	va_start(sequence, num);
+	double temp1, temp2;
+	if (num <= 1) return true;
+	else {
+		temp1 = va_arg(sequence, double);
+		temp2 = va_arg(sequence, double);
+		for (int i = 0; i <= num; i++){
+			if (temp1 > temp2) return false;
+			else {
+				temp1 = temp2;
+				temp2 = va_arg(sequence, double);
+			}
+			return true;
+		}
 	}
-	ordered(i, )
 }
