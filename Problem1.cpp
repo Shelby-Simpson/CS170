@@ -18,6 +18,8 @@ void bubbleSort(vector<double> &sequence, int count);		//The bubbleSort function
 
 
 int main(){
+	cout << "This program checks if a sequence of numbers is in ascending order." << endl;
+	system("pause");
 	cout << ordered(3, 5.0, 6.0, 5.0) << endl;				//This call tests the program if the sequence is not in ascending order.  
 	cout << ordered(4, 1.0, 2.0, 2.3, 3.5) << endl;			//This call tests the program if the sequence is already in ascending order.  
 	cout << ordered(1, 1.0) << endl;						//This call tests the program if there is only one number in the sequence.

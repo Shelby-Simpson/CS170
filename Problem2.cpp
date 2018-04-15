@@ -1,3 +1,12 @@
+/*Assignment 2
+  Problem2
+  Shelby Simpson
+  4/15/2018
+  This program calculates the sum of between 1 and 10 integers using iteration and recursion
+  and then plots asterisks corresponding to the sum with each asterisks equal to 0.1.
+  The sumSequence1 function calculates the sum with iteration while
+  the sumSequence2 function calculates the sum with recursion.
+  The plot function plots with correct amount of asterisks.*/
 #include <iostream>
 #include <vector>
 
@@ -9,6 +18,7 @@ int sumSequence2(int num);
 
 int main(){
 	int countMin, countMax;
+	cout << "This program calculates the sum of between 1 and 10 integers using iteration and recursion." << endl;
 	cout << "Please enter the minimum integer value of count: \n(Must be between 1 and 10)" << endl;
 	cin >> countMin;
 	while (cin.fail() || countMin < 1 || countMin > 10)
@@ -29,12 +39,13 @@ int main(){
 	}
 	cout << endl;
 	cout << "The following sums are calculated using iteration:" << endl;
-	plot(&sumSequence1, countMin, countMax);
+	plot(&sumSequence1, countMin, countMax);											//We call plot with sumSequence1 as an argument.
 	cout << "The following sums are calculated using recursion:" << endl;
-	plot(&sumSequence2, countMin, countMax);
+	plot(&sumSequence2, countMin, countMax);											//We call plot with sumSequence2 as an argument.
 	system("pause");
 }
 
+//The sumSequence1 function sums up a set of numbers with iteration.
 int sumSequence1(int num)
 {
 	int sum = 0;
@@ -49,6 +60,7 @@ int sumSequence1(int num)
 	return sum;
 }
 
+//The sumSequence2 function sums up a set of numbers with recursion.
 int sumSequence2(int num)
 {
 	
@@ -62,6 +74,7 @@ int sumSequence2(int num)
 	}
 }
 
+//The plot function plots the number of asterisks corresponding to the sum.
 void plot(int (*sumSequence)(int), int min, int max)
 {
 	for (int i = min; i <= max; i++)
