@@ -1,5 +1,5 @@
-/*Assignment 2
-  Problem2
+/*Problem2
+  Assignment 2
   Shelby Simpson
   4/15/2018
   This program calculates the sum of between 1 and 10 integers using iteration and recursion

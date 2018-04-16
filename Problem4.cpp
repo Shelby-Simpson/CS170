@@ -1,5 +1,5 @@
-/*Assignment 2
-  Problem 4
+/*Problem4
+  Assignment 2
   Shelby Simpson
   4/15/2018
   This program creates a magic square from a user-inputted positive odd integer.

@@ -23,6 +23,7 @@ int main(){
 	cout << ordered(3, 5.0, 6.0, 5.0) << endl;				//This call tests the program if the sequence is not in ascending order.  
 	cout << ordered(4, 1.0, 2.0, 2.3, 3.5) << endl;			//This call tests the program if the sequence is already in ascending order.  
 	cout << ordered(1, 1.0) << endl;						//This call tests the program if there is only one number in the sequence.
+	system("pause");
 }
 
 /*This is the ordered function.  
@@ -102,11 +103,9 @@ void bubbleSort(vector<double> &sequence, int count)
 		for (index = 0; index < endLoc; index++)
 			if (sequence[index] > sequence[index + 1]) 
 			{
-				// swap the values at index and index + 1
 				temp = sequence[index];
 				sequence[index] = sequence[index + 1];
 				sequence[index + 1] = temp;
-				// and note that there was a swap
 				swapped = true;
 			}
 		if (!swapped)
