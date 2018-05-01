@@ -8,7 +8,8 @@ int main()
 	char string2[30] = {};
 	char string3[30] = {};
 	char *arr[45] = {};
-	int count = 0;
+	int word[45] = {};
+	int count = 0, letter = 0;
 	bool spaceTest = false;
 	cout << "Please enter 3 lines of text that are at most 30 characters long each(^Z to end early...noob):" << endl;
 	cin.getline(string1,30);
@@ -19,112 +20,107 @@ int main()
 	int string3Length = strlen(string3);
 	cout << string1Length << string2Length << string3Length << endl;
 
-	if (!isspace(string1[0]))
-	{
-		arr[count] = &string1[0];
-		count++;
-	}
-	for (int i = 1; i < 30; i++)
-	{
-		if (isspace(string1[i]))
+	if (strlen(string1) > 0){
+		if (!isspace(string1[0]))
 		{
-			spaceTest = true;
-			continue;
+			arr[count] = &string1[0];
+			count++;
+			letter++;
 		}
-		else
+		for (unsigned int i = 1; i < strlen(string1); i++)
 		{
-			if (spaceTest)
+			if (isspace(string1[i]))
 			{
-				arr[count] = &string1[i];
-				count++;
-				spaceTest = false;
+				word[count - 1] = letter;
+				letter = 0;
+				spaceTest = true;
+				continue;
 			}
-
-		}
-	}
-	if (!isspace(string2[0]))
-	{
-		arr[count] = &string2[0];
-		count++;
-	}
-	for (int i = 1; i < 30; i++)
-	{
-		if (isspace(string2[i]))
-		{
-			spaceTest = true;
-			continue;
-		}
-		else
-		{
-			if (spaceTest)
+			else
 			{
-				arr[count] = &string2[i];
-				count++;
-				spaceTest = false;
+				if (spaceTest)
+				{
+					arr[count] = &string1[i];
+					count++;
+					spaceTest = false;
+				}
+				letter++;
 			}
+			
+		}
+	}
 
-		}
-	}
-	if (!isspace(string3[0]))
-	{
-		arr[count] = &string3[0];
-		count++;
-	}
-	for (int i = 1; i < 30; i++)
-	{
-		if (isspace(string3[i]))
+	if (strlen(string2) > 0){
+		letter = 0;
+		if (!isspace(string2[0]))
 		{
-			spaceTest = true;
-			continue;
+			arr[count] = &string2[0];
+			count++;
+			letter++;
 		}
-		else
+		for (unsigned int i = 1; i < strlen(string2); i++)
 		{
-			if (spaceTest)
+			if (isspace(string2[i]))
 			{
-				arr[count] = &string3[i];
-				count++;
-				spaceTest = false;
+				word[count - 1] = letter;
+				letter = 0;
+				spaceTest = true;
+				continue;
 			}
+			else
+			{
+				if (spaceTest)
+				{
+					arr[count] = &string2[i];
+					count++;
+					spaceTest = false;
+				}
 
+			}
+		}
+	}
+	
+	if (strlen(string1) > 0){
+		letter = 0;
+		if (!isspace(string3[0]))
+		{
+			arr[count] = &string3[0];
+			count++;
+			letter++;
+		}
+		for (unsigned int i = 1; i < strlen(string3); i++)
+		{
+			if (isspace(string3[i]))
+			{
+				word[count - 1] = letter;
+				letter = 0;
+				spaceTest = true;
+				continue;
+			}
+			else
+			{
+				if (spaceTest)
+				{
+					arr[count] = &string3[i];
+					count++;
+					spaceTest = false;
+				}
+
+			}
 		}
 	}
 	for (int i = 0; i < count; i++)
 	{
-		cout << *arr[i] - *arr[i+1] << " ";
+		cout << *arr[i] << " ";
 	}
+
+	for (int i = 0; i < count; i++)
+	{
+		cout << word[i] << " ";
+	}
+
 	system("pause");
 
-	/*
-	int lineCount = 0;
-	bool spaceTest = true;
-	char ** arr = new char *[45];
-	cout << "Please enter 3 lines of text that are at most 30 characters long each(^Z to end early...noob):" << endl;
-	
-	while (true)
-	{
-		cin.getline(arr[43], 30);
-		if (cin.eof()) break;
-		cin.getline(arr[44], 30);
-		if (cin.eof()) break;
-		cin.getline(arr[45], 30);
-	}
-	for (int i = 0; i < 45; i++)
-	{
-		for (int j = 0; j < 30; j++)
-		{
-			if (isspace(j))
-			{
-				spaceTest = true;
-				break;
-			}
-			else
-			{
-				spaceTest = false;
-				arr[i][count] = j;
-			}
-			if (!spaceTest) count++;
-		}
-	}*/
 }
 
 
