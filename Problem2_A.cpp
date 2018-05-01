@@ -49,6 +49,7 @@ int main()
 			
 		}
 	}
+	if (!spaceTest) word[count - 1] = letter;
 
 	if (strlen(string2) > 0){
 		letter = 0;
@@ -75,12 +76,13 @@ int main()
 					count++;
 					spaceTest = false;
 				}
-
+				letter++;
 			}
 		}
 	}
-	
-	if (strlen(string1) > 0){
+	if (!spaceTest) word[count - 1] = letter;
+
+	if (strlen(string3) > 0){
 		letter = 0;
 		if (!isspace(string3[0]))
 		{
@@ -105,10 +107,14 @@ int main()
 					count++;
 					spaceTest = false;
 				}
-
+				letter++;
 			}
 		}
 	}
+	if (!spaceTest) word[count - 1] = letter;
+
+	qsort(arr,count,1,);
+
 	for (int i = 0; i < count; i++)
 	{
 		cout << *arr[i] << " ";
