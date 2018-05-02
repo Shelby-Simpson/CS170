@@ -2,12 +2,16 @@
 
 using namespace std;
 
+int compare_function(const void *name1, const void *name2);
+
 int main()
 {
+
 	char string1[30] = {};
 	char string2[30] = {};
 	char string3[30] = {};
 	char *arr[45] = {};
+	char *arrCopy[45] = {};
 	int word[45] = {};
 	int count = 0, letter = 0;
 	bool spaceTest = false;
@@ -18,7 +22,7 @@ int main()
 	int string1Length = strlen(string1);
 	int string2Length = strlen(string2);
 	int string3Length = strlen(string3);
-	cout << string1Length << string2Length << string3Length << endl;
+	//cout << string1Length << string2Length << string3Length << endl;
 
 	if (strlen(string1) > 0){
 		if (!isspace(string1[0]))
@@ -113,20 +117,40 @@ int main()
 	}
 	if (!spaceTest) word[count - 1] = letter;
 
-	qsort(arr,count,1,);
+	for (int i = 0; i < 45; i++)
+	{
+		arrCopy[i] = arr[i];
+	}
+	qsort(arr,count,sizeof(char *),compare_function);
 
 	for (int i = 0; i < count; i++)
 	{
-		cout << *arr[i] << " ";
+		while ((*arr[i]) != ' ' && (*arr[i]) != '\0')
+		{
+			cout << *arr[i];
+			arr[i] = arr[i] + 1;
+		}
+		cout << ' ';
+	}
+	/*for (int i = 0; i < count; i++)
+	{
+		cout << arr[i] << " ";
 	}
 
 	for (int i = 0; i < count; i++)
 	{
 		cout << word[i] << " ";
-	}
+	}*/
 
 	system("pause");
 
+}
+
+int compare_function(const void *name1, const void *name2)
+{
+	const char *name1_ = *(const char **)name1;
+	const char *name2_ = *(const char **)name2;
+	return strcmp(name1_, name2_);
 }
 
 
