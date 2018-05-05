@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <vector>
 
 using namespace std;
 
@@ -13,15 +12,16 @@ struct Tool
 	float cost;
 };
 
+int position(Tool tool);
 istream& operator >> (istream& in, Tool tool);
 ostream& operator << (ostream& out, Tool tool);
 
 int main()
 {
-	vector <Tool*> toolVector;
 	char deleteTool[20];
 	int input, count = 0;
 	Tool createTool;
+	Tool tempTool;
 	fstream toolRecord;
 	toolRecord.open("hardware.dat", ios::in | ios::out | ios::binary | ios::trunc);
 	
@@ -47,38 +47,43 @@ int main()
 	Tool screwdriver = {68, "Screwdriver", 106, 6.99};
 	Tool sledgeHammer = {77, "Sledge Hammer", 11, 21.50};
 	
+	toolRecord.seekp(0, ios::beg);
+	toolRecord.seekp(position(wrench), ios::beg);
 	toolRecord.write((char*) &wrench, sizeof(wrench));
-	toolVector.pushback(&wrench);
 	count++;
+	toolRecord.seekp(position(electricSander), ios::beg);
 	toolRecord.write((char*) &electricSander, sizeof(electricSander));
-	toolVector.pushback(&electricSander);
 	count++;
+	toolRecord.seekp(position(hammer), ios::beg);
 	toolRecord.write((char*) &hammer, sizeof(hammer));
-	toolVector.pushback(&hammer);
 	count++;
+	toolRecord.seekp(position(jigSaw), ios::beg);
 	toolRecord.write((char*) &jigSaw, sizeof(jigSaw));
-	toolVector.pushback(&jigSaw);
 	count++;
+	toolRecord.seekp(position(lawnMower), ios::beg);
 	toolRecord.write((char*) &lawnMower, sizeof(lawnMower));
-	toolVector.pushback(&lawnMower);
 	count++;
+	toolRecord.seekp(position(powerSaw), ios::beg);
 	toolRecord.write((char*) &powerSaw, sizeof(powerSaw));
-	toolVector.pushback(&powerSaw);
 	count++;
+	toolRecord.seekp(position(screwdriver), ios::beg);
 	toolRecord.write((char*) &screwdriver, sizeof(screwdriver));
-	toolVector.pushback(&screwdriver);
 	count++;
+	toolRecord.seekp(position(sledgeHammer), ios::beg);
 	toolRecord.write((char*) &sledgeHammer, sizeof(sledgeHammer));
-	toolVector.pushback(&sledgeHammer);
-	count++;
-	toolRecord.write((char*) &wrench, sizeof(wrench));
-	toolVector.pushback(&wrench);
 	count++;
 	
-	cout << wrench << endl;
-	char * tptr = new char [32];
 	toolRecord.seekg(0, ios::beg);
-	cout << 
+	while (toolRecord.read((char *) &tempTool, 32))
+	{
+		if (tempTool.record == 0) continue;
+		else 
+		{
+			cout << tempTool << endl;
+		}
+	}
+	
+	
 	
 	cout << "Please select an option:" << endl;
 	cout << "1. Create Records" << endl;
@@ -109,6 +114,11 @@ int main()
 	}
 }
 
+int position(Tool tool)
+{
+	int value = tool.record*32;
+	return value;
+}
 istream& operator >> (istream& in, Tool tool)
 {
 	in >> tool.record >> tool.name >> tool.quantity >> tool.cost;
