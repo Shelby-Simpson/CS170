@@ -18,9 +18,9 @@ ostream& operator << (ostream& out, Tool tool);
 
 int main()
 {
-	char deleteTool[20];
-	int input, count = 0;
-	Tool createTool;
+	char deleteTool[20], updateTool[20];
+	int input, input2, count = 0;
+	Tool createTool = { 0, '\0', 0, 0 };
 	Tool tempTool;
 	fstream toolRecord;
 	toolRecord.open("hardware.dat", ios::in | ios::out | ios::binary | ios::trunc);
@@ -82,7 +82,7 @@ int main()
 			cout << tempTool << endl;
 		}
 	}
-	
+	Tool tempTool2 = { 0, '\0', 0, 0 };
 	
 	
 	cout << "Please select an option:" << endl;
@@ -106,12 +106,65 @@ int main()
 			
 		case 3: 
 		cout << "Update Records" << endl;
+		cout << "Please enter the name of the tool whose record you would like to update:" << endl;
+		cin >> updateTool;
+		toolRecord.seekg(0, ios::beg);
+		while (toolRecord.read((char *)&tempTool2, 32))
+		{
+			if (tempTool.name == updateTool) 
+			{
+				cout << "Please select which field you would like to edit:" << endl;
+				cout << "1. Record number" << endl;
+				cout << "2. Name" << endl;
+				cout << "3. Quantity" << endl;
+				cout << "4. Cost" << endl;
+				cin >> input2;
+
+				switch (input2)
+				{
+				case 1:
+					cout << "Update record number" << endl;
+					cout << "Please enter the new value of the record number:" << endl;
+					cin >> tempTool2.record;
+				case 2:
+					cout << "Update tool name" << endl;
+					cout << "Please enter the new value of the tool name (<= 20 characters):" << endl;
+					cin >> tempTool2.name;
+				case 3:
+					cout << "Update quantity" << endl;
+					cout << "Please enter the new quantity:" << endl;
+					cin >> tempTool2.quantity;
+				case 4:
+					cout << "Update cost" << endl;
+					cout << "Please enter the new cost:" << endl;
+					cin >> tempTool2.cost;
+				}
+			}
+			else continue;
+		}
+		break;
 		case 4: 
 		cout <<  "Delete Records" << endl;
 		cout << "Please enter the name of the tool you would like to remove:" << endl;
 		cin >> deleteTool;
+		toolRecord.seekg(0, ios::beg);
+		while (toolRecord.read((char *) &tempTool, 32))
+		{
+			if (tempTool.name == deleteTool)
+				tempTool = { 0, '\0', 0, 0 };
+		}
 		
 	}
+	toolRecord.seekg(0, ios::beg);
+	while (toolRecord.read((char *)&tempTool, 32))
+	{
+		if (tempTool.record == 0) continue;
+		else
+		{
+			cout << tempTool << endl;
+		}
+	}
+	system("pause");
 }
 
 int position(Tool tool)
@@ -122,10 +175,12 @@ int position(Tool tool)
 istream& operator >> (istream& in, Tool tool)
 {
 	in >> tool.record >> tool.name >> tool.quantity >> tool.cost;
+	return in;
 }
 
 ostream& operator << (ostream& out, Tool tool)
 {
 	out << left << setw(4) << tool.record << setw(20) << tool.name 
 	<< setw(4) << tool.quantity << setw(7) << tool.cost << endl;
+	return out;
 }
