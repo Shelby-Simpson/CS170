@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
@@ -19,11 +20,13 @@ ostream& operator << (ostream& out, Tool tool);
 int main()
 {
 	char deleteTool[20], updateTool[20];
-	int input, input2, count = 0;
+	int input, input2, size = 0, oldRecord;;
+	char mainMenu;
+	bool tryAgain = true;
 	Tool createTool = { 0, '\0', 0, 0 };
 	Tool tempTool;
 	fstream toolRecord;
-	toolRecord.open("hardware.dat", ios::in | ios::out | ios::binary | ios::trunc);
+	toolRecord.open("hardware.dat", ios::in | ios::out | ios::binary);
 	
 	if (!toolRecord)
     {
@@ -48,123 +51,159 @@ int main()
 	Tool sledgeHammer = {77, "Sledge Hammer", 11, 21.50};
 	
 	toolRecord.seekp(0, ios::beg);
-	toolRecord.seekp(position(wrench), ios::beg);
+	
+	toolRecord.seekp(position(wrench) - sizeof(wrench), ios::beg);
 	toolRecord.write((char*) &wrench, sizeof(wrench));
-	count++;
-	toolRecord.seekp(position(electricSander), ios::beg);
+	
+	toolRecord.seekp(position(electricSander) - sizeof(electricSander), ios::beg);
 	toolRecord.write((char*) &electricSander, sizeof(electricSander));
-	count++;
-	toolRecord.seekp(position(hammer), ios::beg);
+	
+	toolRecord.seekp(position(hammer) - sizeof(hammer), ios::beg);
 	toolRecord.write((char*) &hammer, sizeof(hammer));
-	count++;
-	toolRecord.seekp(position(jigSaw), ios::beg);
+	
+	toolRecord.seekp(position(jigSaw) - sizeof(jigSaw), ios::beg);
 	toolRecord.write((char*) &jigSaw, sizeof(jigSaw));
-	count++;
-	toolRecord.seekp(position(lawnMower), ios::beg);
+	
+	toolRecord.seekp(position(lawnMower) - sizeof(lawnMower), ios::beg);
 	toolRecord.write((char*) &lawnMower, sizeof(lawnMower));
-	count++;
-	toolRecord.seekp(position(powerSaw), ios::beg);
+	
+	toolRecord.seekp(position(powerSaw) - sizeof(powerSaw), ios::beg);
 	toolRecord.write((char*) &powerSaw, sizeof(powerSaw));
-	count++;
-	toolRecord.seekp(position(screwdriver), ios::beg);
+	
+	toolRecord.seekp(position(screwdriver) - sizeof(screwdriver), ios::beg);
 	toolRecord.write((char*) &screwdriver, sizeof(screwdriver));
-	count++;
-	toolRecord.seekp(position(sledgeHammer), ios::beg);
+	
+	toolRecord.seekp(position(sledgeHammer) - sizeof(sledgeHammer), ios::beg);
 	toolRecord.write((char*) &sledgeHammer, sizeof(sledgeHammer));
-	count++;
 	
-	toolRecord.seekg(0, ios::beg);
-	while (toolRecord.read((char *) &tempTool, 32))
+	
+	
+	while (tryAgain)
 	{
-		if (tempTool.record == 0) continue;
-		else 
-		{
-			cout << tempTool << endl;
-		}
-	}
-	Tool tempTool2 = { 0, '\0', 0, 0 };
-	
-	
-	cout << "Please select an option:" << endl;
-	cout << "1. Create Records" << endl;
-	cout << "2. Read Records" << endl;
-	cout << "3. Update Records" << endl;
-	cout << "4. Delete Records" << endl;
-	cin >> input;
-	
-	switch (input)
-	{
-		case 1: 
-			cout << "Create Records" << endl;
-			cout << "Please enter the values of the record you would like to create. \n"
-			<< "(Record Number) (Name <= 20 characters) (Quantity) (Cost)" << endl;
-			cin >> createTool;
-			toolRecord.write((char*) &createTool, (sizeof(createTool)));
-			count++;
-		case 2: 
-			cout << "Read Records" << endl;
-			
-		case 3: 
-		cout << "Update Records" << endl;
-		cout << "Please enter the name of the tool whose record you would like to update:" << endl;
-		cin >> updateTool;
-		toolRecord.seekg(0, ios::beg);
-		while (toolRecord.read((char *)&tempTool2, 32))
-		{
-			if (tempTool.name == updateTool) 
-			{
-				cout << "Please select which field you would like to edit:" << endl;
-				cout << "1. Record number" << endl;
-				cout << "2. Name" << endl;
-				cout << "3. Quantity" << endl;
-				cout << "4. Cost" << endl;
-				cin >> input2;
-
-				switch (input2)
-				{
-				case 1:
-					cout << "Update record number" << endl;
-					cout << "Please enter the new value of the record number:" << endl;
-					cin >> tempTool2.record;
-				case 2:
-					cout << "Update tool name" << endl;
-					cout << "Please enter the new value of the tool name (<= 20 characters):" << endl;
-					cin >> tempTool2.name;
-				case 3:
-					cout << "Update quantity" << endl;
-					cout << "Please enter the new quantity:" << endl;
-					cin >> tempTool2.quantity;
-				case 4:
-					cout << "Update cost" << endl;
-					cout << "Please enter the new cost:" << endl;
-					cin >> tempTool2.cost;
-				}
-			}
-			else continue;
-		}
-		break;
-		case 4: 
-		cout <<  "Delete Records" << endl;
-		cout << "Please enter the name of the tool you would like to remove:" << endl;
-		cin >> deleteTool;
-		toolRecord.seekg(0, ios::beg);
-		while (toolRecord.read((char *) &tempTool, 32))
-		{
-			if (tempTool.name == deleteTool)
-				tempTool = { 0, '\0', 0, 0 };
-		}
+		cout << "Please select an option:" << endl;
+		cout << "1. Read Records" << endl;
+		cout << "2. Update Records" << endl;
+		cout << "3. Delete Records" << endl;
+		cin >> input;
 		
-	}
-	toolRecord.seekg(0, ios::beg);
-	while (toolRecord.read((char *)&tempTool, 32))
-	{
-		if (tempTool.record == 0) continue;
-		else
+		switch (input)
 		{
-			cout << tempTool << endl;
+			case 1: 
+				cout << "Read Records" << endl;
+				toolRecord.seekg(0, ios::end);
+			size = (int)toolRecord.tellg();
+			toolRecord.seekg(0, toolRecord.beg);
+			while (toolRecord.tellg() < size)
+			{
+				toolRecord.read((char *) &tempTool.record, sizeof(tempTool.record));
+				toolRecord.read((char *) &tempTool.name, sizeof(tempTool.name));
+				toolRecord.read((char *) &tempTool.quantity, sizeof(tempTool.quantity));
+				toolRecord.read((char *) &tempTool.cost, sizeof(tempTool.cost));
+				if (tempTool.record == 0) continue;
+				else cout << tempTool << endl;
+			}
+			break;
+				
+			case 2: 
+			cout << "Update Records" << endl;
+			cout << "Please enter the name of the tool whose record you would like to update:" << endl;
+			cin >> updateTool;
+			toolRecord.seekg(0, ios::end);
+			size = (int)toolRecord.tellg();
+			toolRecord.seekg(0, toolRecord.beg);
+			while (toolRecord.tellg() < size)
+			{
+				toolRecord.read((char *) &tempTool.record, sizeof(tempTool.record));
+				toolRecord.read((char *) &tempTool.name, sizeof(tempTool.name));
+				toolRecord.read((char *) &tempTool.quantity, sizeof(tempTool.quantity));
+				toolRecord.read((char *) &tempTool.cost, sizeof(tempTool.cost));
+				if ((string)tempTool.name == (string)updateTool)
+				{
+					toolRecord.seekp(-32, toolRecord.cur);
+					cout << "Please select which field you would like to edit:" << endl;
+					cout << "1. Record number" << endl;
+					cout << "2. Name" << endl;
+					cout << "3. Quantity" << endl;
+					cout << "4. Cost" << endl;
+					cin >> input2;
+
+					switch (input2)
+					{
+					case 1:
+						oldRecord = tempTool.record;
+						cout << "Update record number" << endl;
+						cout << "Please enter the new value of the record number:" << endl;
+						cin >> tempTool.record;
+						toolRecord.seekp(tempTool.record*32, ios::beg);
+						toolRecord.write((char *) &tempTool.record, sizeof(tempTool.record));
+						toolRecord.write((char *) &tempTool.name, sizeof(tempTool.name));
+						toolRecord.write((char *) &tempTool.quantity, sizeof(tempTool.quantity));
+						toolRecord.write((char *) &tempTool.cost, sizeof(tempTool.cost));
+						tempTool = {0, '\0', 0, 0};
+						toolRecord.seekp((oldRecord*32) - sizeof(tempTool), ios::beg);
+						toolRecord.write((char *) &tempTool, sizeof(tempTool));
+						cout << updateTool << " has been updated." << endl;
+						break;
+					case 2:
+						cout << "Update tool name" << endl;
+						cout << "Please enter the new value of the tool name (<= 20 characters):" << endl;
+						cin >> tempTool.name;
+						toolRecord.write((char *) &tempTool, sizeof(tempTool));
+						cout << updateTool << " has been updated." << endl;
+						break;
+					case 3:
+						cout << "Update quantity" << endl;
+						cout << "Please enter the new quantity:" << endl;
+						cin >> tempTool.quantity;
+						toolRecord.write((char *) &tempTool, sizeof(tempTool));
+						cout << updateTool << " has been updated." << endl;
+						break;
+					case 4:
+						cout << "Update cost" << endl;
+						cout << "Please enter the new cost:" << endl;
+						cin >> tempTool.cost;
+						toolRecord.write((char *) &tempTool, sizeof(tempTool));
+						cout << updateTool << " has been updated." << endl;
+						break;
+					}
+					break;
+				}
+				else continue;
+			}
+			
+			break;
+			case 3: 
+			cout <<  "Delete Records" << endl;
+			cout << "Please enter the name of the tool you would like to remove:" << endl;
+			cin >> deleteTool;
+			toolRecord.seekg(0, ios::end);
+			size = (int)toolRecord.tellg();
+			toolRecord.seekg(0, toolRecord.beg);
+			while (toolRecord.tellg() < size)
+			{
+				toolRecord.read((char *) &tempTool.record, sizeof(tempTool.record));
+				toolRecord.read((char *) &tempTool.name, sizeof(tempTool.name));
+				toolRecord.read((char *) &tempTool.quantity, sizeof(tempTool.quantity));
+				toolRecord.read((char *) &tempTool.cost, sizeof(tempTool.cost));
+				if ((string)tempTool.name == (string)deleteTool)
+				{
+					tempTool  = {0, '\0', 0, 0};
+					toolRecord.seekp(-32, toolRecord.cur);
+					toolRecord.write((char *) &tempTool, sizeof(tempTool));
+					cout << deleteTool << " has been deleted." << endl;
+				}
+				else continue;
+			}
+			break;
 		}
+		cout << "Would like to go back to the main menu? (y/n)" << endl;
+			cin >> mainMenu;
+			if (tolower(mainMenu) == 'y')
+			{
+				tryAgain = true;
+			}
+			else tryAgain = false;
 	}
-	system("pause");
 }
 
 int position(Tool tool)
