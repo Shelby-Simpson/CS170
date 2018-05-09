@@ -1,3 +1,10 @@
+/*Problem2
+  Assignment 3
+  Shelby Simpson
+  5/8/2018
+  This program creates a binary file as a record of tools.  100 empty records are created followed by 8 predeternmined tools.
+  The user has the option of reading the list of records, updating any field of any record, or deleting a record.*/
+
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -5,7 +12,7 @@
 
 using namespace std;
 
-struct Tool
+struct Tool												//The struct Tool is the tool record inputted into the file.
 {
 	int record;
 	char name[20];
@@ -13,9 +20,9 @@ struct Tool
 	float cost;
 };
 
-int position(Tool tool);
-istream& operator >> (istream& in, Tool tool);
-ostream& operator << (ostream& out, Tool tool);
+int position(Tool tool);								//The position function gets the int value of the position of a record in the file.
+istream& operator >> (istream& in, Tool tool);			//The >> operator is overloaded to be used with the struct Tool.
+ostream& operator << (ostream& out, Tool tool);			//The << operator is overloaded to be used with the struct Tool.
 
 int main()
 {
@@ -23,9 +30,11 @@ int main()
 	int input, input2, size = 0, oldRecord;;
 	char mainMenu;
 	bool tryAgain = true;
-	Tool createTool = { 0, '\0', 0, 0 };
+	bool cinBad = true;
+	Tool createTool = { 0, "\0", 0, 0 };
 	Tool tempTool;
-	fstream toolRecord;
+	fstream toolRecord("hardware.dat", ios::out);						//Creating the file "hardware.dat".
+	toolRecord.close();
 	toolRecord.open("hardware.dat", ios::in | ios::out | ios::binary);
 	
 	if (!toolRecord)
@@ -34,22 +43,26 @@ int main()
     	exit(1);
     }
 	
-	Tool toolEmpty = {0, '\0', 0, 0};
+	Tool toolEmpty = {0, "\0", 0, 0};
 	
 	for (int i = 0; i < 100; i++)
 	{
 		toolRecord.write((char*) &toolEmpty, sizeof(toolEmpty));
 	}
 	
-	Tool wrench = {83, "Wrench", 34, 7.50};
-	Tool electricSander = {3, "Electric Sander", 7, 57.98};
-	Tool hammer = {17, "Hammer", 76, 11.99};
-	Tool jigSaw = {24, "Jig Saw", 21, 11.00};
-	Tool lawnMower = {39, "Lawn Mower", 3, 79.50};
-	Tool powerSaw = {56, "Power Saw", 18, 99.99};
-	Tool screwdriver = {68, "Screwdriver", 106, 6.99};
-	Tool sledgeHammer = {77, "Sledge Hammer", 11, 21.50};
+	/*Here we create 8 predetermined tools to be inputted into the file.*/
+
+	Tool wrench = {83, "Wrench", 34, 7.50f};
+	Tool electricSander = {3, "Electric Sander", 7, 57.98f};
+	Tool hammer = {17, "Hammer", 76, 11.99f};
+	Tool jigSaw = {24, "Jig Saw", 21, 11.00f};
+	Tool lawnMower = {39, "Lawn Mower", 3, 79.50f};
+	Tool powerSaw = {56, "Power Saw", 18, 99.99f};
+	Tool screwdriver = {68, "Screwdriver", 106, 6.99f};
+	Tool sledgeHammer = {77, "Sledge Hammer", 11, 21.50f};
 	
+	/*Here we write each of the 8 tools into the file.*/
+
 	toolRecord.seekp(0, ios::beg);
 	
 	toolRecord.seekp(position(wrench) - sizeof(wrench), ios::beg);
@@ -76,7 +89,7 @@ int main()
 	toolRecord.seekp(position(sledgeHammer) - sizeof(sledgeHammer), ios::beg);
 	toolRecord.write((char*) &sledgeHammer, sizeof(sledgeHammer));
 	
-	
+	/*The user's actions start here.  A switch statement lets the user decide what he or she would like to do.*/
 	
 	while (tryAgain)
 	{
@@ -132,14 +145,30 @@ int main()
 					case 1:
 						oldRecord = tempTool.record;
 						cout << "Update record number" << endl;
-						cout << "Please enter the new value of the record number:" << endl;
-						cin >> tempTool.record;
+						while (true)
+						{
+							cout << "Please enter the new value of the record number:" << endl;
+							cin >> tempTool.record;
+							if (!cin.good() || tempTool.record < 1 || tempTool.record > 100 || tempTool.record != (int)tempTool.record)
+							{
+								cout << "Please enter an integer:" << endl;
+								cin.clear();
+								cin.ignore(9999, '\n');
+							}
+							else
+							{
+								tempTool.record = (int)tempTool.record;
+								cin.clear();
+								cin.ignore(9999, '\n');
+								break;
+							}
+						}
 						toolRecord.seekp(tempTool.record*32, ios::beg);
 						toolRecord.write((char *) &tempTool.record, sizeof(tempTool.record));
 						toolRecord.write((char *) &tempTool.name, sizeof(tempTool.name));
 						toolRecord.write((char *) &tempTool.quantity, sizeof(tempTool.quantity));
 						toolRecord.write((char *) &tempTool.cost, sizeof(tempTool.cost));
-						tempTool = {0, '\0', 0, 0};
+						tempTool = { 0, "\0", 0, 0 };
 						toolRecord.seekp((oldRecord*32) - sizeof(tempTool), ios::beg);
 						toolRecord.write((char *) &tempTool, sizeof(tempTool));
 						cout << updateTool << " has been updated." << endl;
@@ -153,15 +182,41 @@ int main()
 						break;
 					case 3:
 						cout << "Update quantity" << endl;
-						cout << "Please enter the new quantity:" << endl;
-						cin >> tempTool.quantity;
+						while (cinBad)
+						{
+							cout << "Please enter the new quantity:" << endl;
+							cin >> tempTool.quantity;
+							if (cin.fail() || tempTool.quantity != tempTool.quantity)
+							{
+								cout << "Please enter an integer:" << endl;
+								cin.clear();
+								cin.ignore(9999, '\n');
+							}
+							else
+							{
+								tempTool.quantity = (int)tempTool.quantity;
+								cin.clear();
+								cin.ignore(9999, '\n');
+								cinBad = false;
+							}
+						}
 						toolRecord.write((char *) &tempTool, sizeof(tempTool));
 						cout << updateTool << " has been updated." << endl;
 						break;
 					case 4:
 						cout << "Update cost" << endl;
-						cout << "Please enter the new cost:" << endl;
-						cin >> tempTool.cost;
+						while (true)
+						{
+							cout << "Please enter the new cost:" << endl;
+							cin >> tempTool.cost;
+							if (!cin.good())
+							{
+								cout << "Please enter an integer:" << endl;
+								cin.clear();
+								cin.ignore(9999, '\n');
+							}
+							else break;
+						}
 						toolRecord.write((char *) &tempTool, sizeof(tempTool));
 						cout << updateTool << " has been updated." << endl;
 						break;
@@ -187,7 +242,7 @@ int main()
 				toolRecord.read((char *) &tempTool.cost, sizeof(tempTool.cost));
 				if ((string)tempTool.name == (string)deleteTool)
 				{
-					tempTool  = {0, '\0', 0, 0};
+					tempTool  = {0, "\0", 0, 0};
 					toolRecord.seekp(-32, toolRecord.cur);
 					toolRecord.write((char *) &tempTool, sizeof(tempTool));
 					cout << deleteTool << " has been deleted." << endl;
@@ -196,7 +251,7 @@ int main()
 			}
 			break;
 		}
-		cout << "Would like to go back to the main menu? (y/n)" << endl;
+		cout << "Would like to go back to the main menu? (y/n)" << endl;    //The user can go back to the menu to select another operation.
 			cin >> mainMenu;
 			if (tolower(mainMenu) == 'y')
 			{
@@ -204,6 +259,7 @@ int main()
 			}
 			else tryAgain = false;
 	}
+	toolRecord.close();
 }
 
 int position(Tool tool)
